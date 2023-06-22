@@ -38,10 +38,10 @@ import ReviewsDAO from '../dao/reviewsDAO.js'
                date
            )
 
-           /*var { error } = ReviewResponse
+           var { error } = ReviewResponse
            if(error){
                res.status(500).json({error})
-           }*/
+           }
 
            if(ReviewResponse.modifiedCount === 0){
             throw new Error ("unable to update review. User may not be original poster")

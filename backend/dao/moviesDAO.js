@@ -1,3 +1,5 @@
+import mongodb from "mongodb";
+const ObjectId = mongodb.ObjectId;
 /**
  * implement movies data access object to access movie(s) in db
  */
@@ -15,6 +17,7 @@ export default class MoviesDAO{
             console.error(`Unable to connect in MoviesDAO: ${e}`)
         }
     }
+
     // get 20 movies at once
     static async getMovies({filters = null,page = 0,moviesPerPage = 20} = {}){
         let query
@@ -39,4 +42,39 @@ export default class MoviesDAO{
         }
     }
 
+    static async getRatings(){
+        let ratings = [];
+        
+        try{
+            ratings = await movies.distinct("rated");
+            return ratings;
+        }
+        catch(e){
+            console.error(`unable to get ratings, $(e)`);
+            return ratings;
+        }
+    }
+
+    static async getMovieById(id){
+        try{
+            return await movies.aggregate(
+                [
+                    { 
+                        $match: {_id: new ObjectId(id),} 
+                    } ,
+                    { 
+                        $lookup: { 
+                            from: 'reviews', 
+                            localField: '_id', 
+                            foreignField: 'movie_id', 
+                            as: 'reviews', 
+                        } 
+                    }
+                ]).next();
+        }
+        catch(e){
+            console.error(`something went wrong in getMovieById: ${e}`);
+            throw e;
+        }
+    }
 }
