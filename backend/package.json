@@ -10,6 +10,7 @@
   },
   "author": "",
   "license": "ISC",
+  "engines":{"node":"v16.16.0"},
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
